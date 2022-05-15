@@ -100,6 +100,7 @@ class table extends Component {
     } else {
       window.alert('Token contract not deployed to detected network.')
     }
+    
     const user = await this.state.landList.methods.getUser(accounts[0]).call()
     this.setState({
       uid: user[0],

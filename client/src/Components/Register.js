@@ -62,7 +62,9 @@ class Register extends Component {
     await window.localStorage.setItem('web3account', accounts[0])
     this.setState({ account: accounts[0] })
     const networkId = await web3.eth.net.getId()
+    console.log("networkId" + networkId)
     const LandData = Land.networks[networkId]
+    console.log("land " + LandData)
     if (LandData) {
       const landList = new web3.eth.Contract(Land.abi, LandData.address)
       this.setState({ landList })
@@ -84,6 +86,7 @@ class Register extends Component {
   }
 
   login = async (data) => {
+    console.log('login')
     await this.state.landList.methods
       .addUser(
         data.address,
@@ -124,8 +127,10 @@ class Register extends Component {
       this.state.postalCode
     ) {
       if (this.validateEmail(this.state.email)) {
+        console.log("sahi")
         axios.post('http://localhost:3001/signup', data).then(
           (response) => {
+            console.log(response)
             if (response.status == 200) {
               this.setState({
                 name: '',

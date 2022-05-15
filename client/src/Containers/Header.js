@@ -99,6 +99,7 @@ class Header extends Component {
           <Button
             color="inherit"
             onClick={() => {
+              window.localStorage.setItem('authenticated', false)
               window.location = '/login'
             }}
           >
@@ -109,6 +110,7 @@ class Header extends Component {
           <Button
             color="inherit"
             onClick={() => {
+              window.localStorage.setItem('authenticated', false)
               window.location = '/signup'
             }}
           >

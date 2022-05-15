@@ -18481,12 +18481,12 @@
     "1337": {
       "events": {},
       "links": {},
-      "address": "0xA3c6bC76656f8Ff5C263440a7f4eC5e79FcAB90A",
-      "transactionHash": "0x29756392397edf60e485b0199b0ae6499bf0b1c21809475bb0417662ef3680f2"
+      "address": "0x5f5134666a7341D2242358c3594CA7189Ea37177",
+      "transactionHash": "0x854b6cd47c3307d9089b41268406013e79339051fdec2aa171bbd7443f098da4"
     }
   },
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-05-15T14:21:23.886Z",
+  "updatedAt": "2022-05-15T14:20:39.481Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

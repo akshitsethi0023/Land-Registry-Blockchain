@@ -75,6 +75,7 @@ class Login extends Component {
           .getUser(data.address)
           .call()
 
+        console.log(user)
         if (user) {
           this.setState({
             uid: user[0],
