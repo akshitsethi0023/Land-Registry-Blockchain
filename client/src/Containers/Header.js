@@ -52,6 +52,7 @@ class Header extends Component {
     const acc = await window.localStorage.getItem('web3account')
     this.setState({ account: acc })
     // console.log(acc)
+    
     const networkId = await web3.eth.net.getId()
     const LandData = Land.networks[networkId]
     if (LandData) {
@@ -208,16 +209,7 @@ class Header extends Component {
                         Dashboard
                       </a>
                     </li>
-                    <li>
-                      <a
-                        className="smoothscroll"
-                        onClick={() => {
-                          window.location = '/profile'
-                        }}
-                      >
-                        Profile
-                      </a>
-                    </li>
+                    
                     <li>
                       <a
                         className="smoothscroll"
@@ -231,103 +223,10 @@ class Header extends Component {
                     </li>
                   </div>
                 )}
-                <li>
-                  <a
-                    className="smoothscroll"
-                    onClick={() => {
-                      window.location = '/guide'
-                    }}
-                  >
-                    FAQ
-                  </a>
-                </li>
               </ul>
             </nav>
           </header>
-          {/* <AppBar position="static">
-            <Toolbar>
-              <Typography className={classes.title} variant="h6" noWrap>
-                Land Registry Application
-              </Typography>
-
-              <div className={classes.grow} />
-              <div className={classes.sectionDesktop}>
-                <Button color="inherit">Home</Button>
-
-                {this.state.authenticated == false && (
-                  <div>
-                    <Button
-                      color="inherit"
-                      onClick={() => {
-                        window.location = '/login'
-                      }}
-                    >
-                      Login
-                    </Button>
-                    <Button
-                      color="inherit"
-                      onClick={() => {
-                        window.location = '/signup'
-                      }}
-                    >
-                      SignUp
-                    </Button>
-                    <Button
-                      color="inherit"
-                      onClick={() => {
-                        window.location = '/govt_login'
-                      }}
-                    >
-                      Government Login
-                    </Button>
-                  </div>
-                )}
-                {this.state.authenticated == true && (
-                  <div>
-                    {' '}
-                    <Button
-                      color="inherit"
-                      onClick={() => {
-                        window.location = '/dashboard'
-                      }}
-                    >
-                      Dashboard
-                    </Button>
-                    <Button
-                      color="inherit"
-                      onClick={() => {
-                        window.location = '/profile'
-                      }}
-                    >
-                      Profile
-                    </Button>
-                    <Button
-                      color="inherit"
-                      onClick={() => {
-                        window.localStorage.setItem('authenticated', false)
-                        window.location = '/login'
-                      }}
-                    >
-                      Logout
-                    </Button>
-                  </div>
-                )}
-              </div>
-              <div className={classes.sectionMobile}>
-                <IconButton
-                  aria-label="show more"
-                  aria-controls={mobileMenuId}
-                  aria-haspopup="true"
-                  onClick={this.handleMobileMenuOpen}
-                  color="inherit"
-                >
-                  <MoreIcon />
-                </IconButton>
-              </div>
-            </Toolbar>
-          </AppBar> */}
           {renderMobileMenu}
-          {/* {renderMenu} */}
         </div>
       </div>
     )

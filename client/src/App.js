@@ -15,7 +15,6 @@ import Header from './Containers/Header'
 import Govt_login from './Components/Govt_Login'
 import RegistrationForm from './Containers/RegistrationForm'
 import Dashboard_Govt from './Components/Dashboard_Govt'
-import Help from './Components/Help'
 import Home from './Components/Home'
 
 class App extends Component {
@@ -74,7 +73,6 @@ class App extends Component {
               component={RegistrationForm}
             />
             <Route exact path="/dashboard_govt" component={Dashboard_Govt} />
-            <Route exact path="/guide" component={Help} />
           </div>
         </Switch>
       </Router>

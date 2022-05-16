@@ -20,7 +20,8 @@ ul {
 }
 
 .bg {
-	background: url('./images/bg.jpg');
+	/* background: url('./images/bg.jpg'); */
+	background-color: #000;
 	background-repeat: no-repeat;
 	background-size: cover;
 	height: 100vh;
@@ -29,23 +30,15 @@ ul {
 	color: #fff;
 	font-size: 90px;
 	font-weight: 600;
-	padding-top: 350px;
-	padding-left: 80px;
+	padding-top: 250px;
+	padding-left: 12%;
 	text-transform: uppercase;
 	line-height: 95px;
 	font-family: 'Roboto Condensed', sans-serif;
 }
-.typewriter {
-	font-size: 30px;
-	line-height: 60px;
-	font-weight: 400;
-	font-family: 'Roboto Condensed', sans-serif;
-	color: #fff;
-	text-transform: none;
-}
 .home-button {
 	padding-top: 20px;
-	padding-left: 80px;
+	padding-left: 38%;
 }
 .home-button button {
 	background-color: #328888;
@@ -76,15 +69,7 @@ ul {
 	font-weight: 600;
 	/* font-family: 'Pacifico', cursive; */
 }
-.faq-text {
-	color: #fff;
-	opacity: 0.8;
-	font-size: 50px;
-	margin-bottom: 50px;
-	text-align: center;
-	font-weight: 600;
-	/* font-family: 'Pacifico', cursive; */
-}
+
 .register-text {
 	opacity: 0.8;
 	color: #fff;
@@ -130,7 +115,8 @@ ul {
 	margin-top: 100px;
 }
 .profile-bg {
-	background-color: rgb(37, 37, 37);
+	background-color: #000;
+	/* background-color: rgb(37, 37, 37); */
 	/* min-height: 100vh; */
 	position: fixed;
 	top: 0;

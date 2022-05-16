@@ -103,6 +103,7 @@ class Login extends Component {
             window.location = '/dashboard'
           } 
           else {
+            alert('Login Failed. Make sure your account is already registered!')
             console.log('Login Failed')
             window.localStorage.setItem('authenticated', false)
             this.props.history.push('/login')

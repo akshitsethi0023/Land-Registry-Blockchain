@@ -34,14 +34,16 @@ class Dashboard extends Component {
   }
 
   componentWillMount = async () => {
-    // console.log('token= ' + window.localStorage.getItem('token'))
     const user = jwtDecode(window.localStorage.getItem('token'))
     this.setState({ ...user.user })
     // this.setState({ ...user.user })
+
     const web3 = window.web3
     // Use web3 to get the user's accounts.
     const accounts = await web3.eth.getAccounts()
-    window.localStorage.setItem('web3account', accounts[0])
+    await window.localStorage.setItem('web3account', accounts[0])
+    this.setState({ account: accounts[0] })
+    
     this.setState({ isLoading: false })
     const networkId = await web3.eth.net.getId()
     const LandData = Land.networks[networkId]

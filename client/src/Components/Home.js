@@ -6,34 +6,16 @@ import Button from '@material-ui/core/Button'
 export default class Home extends Component {
   render() {
     return (
-      <div className="bg">
-        <div className="home-text">
-          Land Registry
-          <br /> Application
-          <div className="typewriter">
-            <Typewriter
-              options={{
-                autoStart: true,
-                loop: true,
-                delay: 80,
-                deleteSpeed: 15,
-              }}
-              onInit={(typewriter) => {
-                typewriter
-                  .typeString('Trustable, Transparent and Digitized Platform')
-
-                  .pauseFor(300)
-                  .deleteChars(45)
-                  .typeString('Open for all! Register Now.')
-                  .pauseFor(300)
-                  .start()
-              }}
-            />
-          </div>
+      <div className="bg"
+      >
+        <div className="home-text"
+        >
+          Land Registry Application
+          
           <hr
             style={{
               border: '8px solid #fff',
-              width: '150px',
+              width: '87%',
               marginLeft: '0px',
             }}
           />

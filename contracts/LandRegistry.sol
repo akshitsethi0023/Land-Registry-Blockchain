@@ -1,11 +1,11 @@
 pragma solidity ^0.5.0;
 
 contract LandRegistry {
-    struct Task {
-        uint256 id;
-        string content;
-        bool completed;
-    }
+    // struct Task {
+    //     uint256 id;
+    //     string content;
+    //     bool completed;
+    // }
     struct user {
         address userid;
         string uname;
@@ -36,36 +36,36 @@ contract LandRegistry {
         owner = msg.sender;
     }
 
-    struct profiles {
-        uint256[] assetList;
-    }
+    // struct profiles {
+    //     uint256[] assetList;
+    // }
 
-    mapping(address => profiles) profile;
-    mapping(address => user) public users;
-    mapping(uint256 => landDetails) public land;
+    mapping(address => uint256[]) profile;      // address of user ==> list of land assets he owns
+    mapping(address => user) public users;      // address of user ==> details of user.
+    mapping(uint256 => landDetails) public land;// key of land     ==> details of land.
 
     function addUser(
-        address uid,
-        string memory _uname,
-        uint256 _ucontact,
-        string memory _uemail,
-        uint256 _ucode,
-        string memory _ucity
+        address user_address, 
+        string memory user_name, 
+        uint256 user_contact, 
+        string memory user_email,
+        uint256 user_postal_code,
+        string memory user_city
     ) public returns (bool) {
-        users[uid] = user(
-            uid,
-            _uname,
-            _ucontact,
-            _uemail,
-            _ucode,
-            _ucity,
+        users[user_address] = user(
+            user_address,
+            user_name,
+            user_contact,
+            user_email,
+            user_postal_code,
+            user_city,
             true
         );
-        userarr.push(uid);
+        userarr.push(user_address);
         return true;
     }
 
-    function getUser(address uid)
+    function getUser(address user_address)
         public
         view
         returns (
@@ -78,20 +78,20 @@ contract LandRegistry {
             bool
         )
     {
-        if (users[uid].exist)
+        if (users[user_address].exist)
             return (
-                users[uid].userid,
-                users[uid].uname,
-                users[uid].ucontact,
-                users[uid].uemail,
-                users[uid].upostalCode,
-                users[uid].city,
-                users[uid].exist
+                users[user_address].userid,
+                users[user_address].uname,
+                users[user_address].ucontact,
+                users[user_address].uemail,
+                users[user_address].upostalCode,
+                users[user_address].city,
+                users[user_address].exist
             );
     }
 
     function Registration(
-        address payable _id,
+        address payable owner_id,
         string memory _ipfsHash,
         string memory _laddress,
         uint256 _lamount,
@@ -100,7 +100,7 @@ contract LandRegistry {
         string memory _isAvailable
     ) public returns (bool) {
         land[_key] = landDetails(
-            _id,
+            owner_id,
             _ipfsHash,
             _laddress,
             _lamount,
@@ -110,7 +110,7 @@ contract LandRegistry {
             0x0000000000000000000000000000000000000000,
             reqStatus.Default
         );
-        profile[_id].assetList.push(_key);
+        profile[owner_id].push(_key);
         assets.push(_key);
         return true;
     }
@@ -121,12 +121,11 @@ contract LandRegistry {
         returns (uint256)
     {
         return
-            uint256(keccak256(abi.encodePacked(_laddress, _lamount))) %
-            10000000000000;
+            uint256(keccak256(abi.encodePacked(_laddress, _lamount))) % 10000000000000;
     }
 
     function viewAssets() public view returns (uint256[] memory) {
-        return (profile[msg.sender].assetList);
+        return (profile[msg.sender]);
     }
 
     function Assets() public view returns (uint256[] memory) {
@@ -190,35 +189,34 @@ contract LandRegistry {
     }
 
     function buyProperty(uint256 property) public payable {
-        //require(msg.sender == land[property].requester)
+        require(msg.sender == land[property].requester);
         require(land[property].requestStatus == reqStatus.Approved);
         require(msg.value == (land[property].lamount * 1000000000000000000));
-        land[property].id.transfer(
-            land[property].lamount * 1000000000000000000
-        );
+
+        land[property].id.transfer(land[property].lamount * 1000000000000000000);
         removeOwnership(land[property].id, property);
+        
         land[property].id = msg.sender;
         land[property].isGovtApproved = "Not Approved";
         land[property].isAvailable = "Not yet approved by the govt.";
         land[property].requester = address(0);
         land[property].requestStatus = reqStatus.Default;
-        profile[msg.sender].assetList.push(property);
+        profile[msg.sender].push(property);
     }
 
     function removeOwnership(address previousOwner, uint256 id) private {
         uint256 index = findId(id, previousOwner);
-        profile[previousOwner].assetList[index] = profile[previousOwner]
-            .assetList[profile[previousOwner].assetList.length - 1];
-        delete profile[previousOwner].assetList[profile[previousOwner]
-            .assetList
-            .length - 1];
-        profile[previousOwner].assetList.length--;
+        uint256 len = profile[previousOwner].length;
+
+        profile[previousOwner][index] = profile[previousOwner][len - 1];
+        delete profile[previousOwner][len - 1];
+        profile[previousOwner].length--;
     }
 
     function findId(uint256 id, address user) public view returns (uint256) {
         uint256 i;
-        for (i = 0; i < profile[user].assetList.length; i++) {
-            if (profile[user].assetList[i] == id) return i;
+        for (i = 0; i < profile[user].length; i++) {
+            if (profile[user][i] == id) return i;
         }
         return i;
     }
