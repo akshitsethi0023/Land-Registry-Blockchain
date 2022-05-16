@@ -15,7 +15,6 @@ import Header from './Containers/Header'
 import Govt_login from './Components/Govt_Login'
 import RegistrationForm from './Containers/RegistrationForm'
 import Dashboard_Govt from './Components/Dashboard_Govt'
-import Profile from './Components/Profile'
 import Help from './Components/Help'
 import Home from './Components/Home'
 
@@ -69,7 +68,6 @@ class App extends Component {
             <Route exact path="/login" component={Login} />
             <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/govt_login" component={Govt_login} />
-            <Route exact path="/profile" component={Profile} />
             <Route
               exact
               path="/registration_form"

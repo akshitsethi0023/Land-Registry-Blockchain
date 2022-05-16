@@ -41,7 +41,6 @@ contract LandRegistry {
     }
 
     mapping(address => profiles) profile;
-
     mapping(address => user) public users;
     mapping(uint256 => landDetails) public land;
 
@@ -191,6 +190,7 @@ contract LandRegistry {
     }
 
     function buyProperty(uint256 property) public payable {
+        //require(msg.sender == land[property].requester)
         require(land[property].requestStatus == reqStatus.Approved);
         require(msg.value == (land[property].lamount * 1000000000000000000));
         land[property].id.transfer(
