@@ -149,15 +149,6 @@ class table extends Component {
     }
 
     console.log(data)
-    await axios
-      .post('http://localhost:3001/send_mail', data)
-      .then((response) => {
-        if (response.status == 200) {
-          alert('Message Sent.')
-        } else {
-          alert('Message failed to send.')
-        }
-      })
     window.location.reload()
   }
   handleRequesterInfo = async (address) => {

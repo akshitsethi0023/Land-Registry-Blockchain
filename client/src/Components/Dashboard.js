@@ -85,7 +85,8 @@ class Dashboard extends Component {
     } else {
       window.alert('Token contract not deployed to detected network.')
     }
-
+    const ui = window.localStorage.getItem('acc')
+    this.setState({acc: ui})
     if (
       !window.localStorage.getItem('authenticated') ||
       window.localStorage.getItem('authenticated') === 'false'
@@ -150,8 +151,8 @@ class Dashboard extends Component {
       console.log('temp', temp)
 
       if (
-        details[0] != this.state.account &&
-        (details[5] == this.state.account ||
+        details[0] != this.state.acc &&
+        (details[5] == this.state.acc ||
           details[5] == '0x0000000000000000000000000000000000000000')
       ) {
         this.state.assetList1.push({
@@ -188,7 +189,7 @@ class Dashboard extends Component {
   async getDetails() {
     const properties = await this.state.landList.methods
       .viewAssets()
-      .call({ from: this.state.account })
+      .call({ from: this.state.acc })
     for (let item of properties) {
       this.propertyDetails(item)
     }
@@ -232,36 +233,20 @@ class Dashboard extends Component {
                   <Tab label="Regsiter Land" {...a11yProps(2)} />
                 </Tabs>
               </AppBar>
-              {/* <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-      > */}
+              
               <TabPanel value={this.state.value} index={0}>
                 <div style={{ marginTop: '60px' }}>
-                  {/* <h2 style={{ textAlign: 'center' }}>My Properties</h2> */}
                   <Table assetList={this.state.assetList} />
                 </div>
               </TabPanel>
               <TabPanel value={this.state.value} index={1}>
                 <div style={{ marginTop: '60px' }}>
-                  {/* <h2 style={{ textAlign: 'center' }}>Available Properties</h2> */}
                   <AvailableTable assetList={this.state.assetList1} />
                 </div>
               </TabPanel>
               <TabPanel value={this.state.value} index={2}>
                 <RegistrationForm />
               </TabPanel>
-
-              {/* </SwipeableViews> */}
-              {/* <Button
-              style={{ marginTop: '30px' }}
-              variant="contained"
-              color="primary"
-              onClick={() => this.props.history.push('/registration_form')}
-            >
-              Register Land
-            </Button> */}
             </div>
           </Container>
         </div>

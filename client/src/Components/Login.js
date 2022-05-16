@@ -8,6 +8,7 @@ import axios from 'axios'
 import { withRouter, Redirect } from 'react-router-dom'
 import Land from '../contracts/LandRegistry.json'
 import { withStyles } from '@material-ui/core/styles'
+import Dashboard from './Dashboard'
 
 const styles = () => ({
   root: {
@@ -50,25 +51,36 @@ class Login extends Component {
     const accounts = await web3.eth.getAccounts()
     await window.localStorage.setItem('web3account', accounts[0])
     this.setState({ account: accounts[0] })
+    
     const networkId = await web3.eth.net.getId()
     const LandData = Land.networks[networkId]
+    
     if (LandData) {
       const landList = new web3.eth.Contract(Land.abi, LandData.address)
       this.setState({ landList })
-    } else {
+    } 
+    else {
       window.alert('Token contract not deployed to detected network.')
     }
 
-    if (window.localStorage.getItem('authenticated') === 'true')
+    if (window.localStorage.getItem('authenticated') === 'true') {
       window.location = '/dashboard'
+    }
   }
+
   handleChange = (name) => (event) => {
     this.setState({ [name]: event.target.value })
   }
+
   handleSubmit = async () => {
     let data = {
       address: this.state.address,
     }
+    if (this.state.account != data.address) {
+      alert('Account entered not same as account connected with metamask')
+      window.location = '/login'
+    }
+
     if (this.state.address) {
       try {
         const user = await this.state.landList.methods
@@ -88,21 +100,23 @@ class Login extends Component {
           })
           if (this.state.exist) {
             window.localStorage.setItem('authenticated', true)
-            // window.localStorage.setItem('web3account', this.state.uid)
-            // window.localStorage.setItem('category', 'user')
             window.location = '/dashboard'
-          } else {
+          } 
+          else {
             console.log('Login Failed')
             window.localStorage.setItem('authenticated', false)
             this.props.history.push('/login')
           }
-        } else {
+        } 
+        else {
           console.log('Please try again')
         }
-      } catch (error) {
+      } 
+      catch (error) {
         console.log('error:', error)
       }
-    } else {
+    } 
+    else {
       alert('All fields are required')
     }
   }
@@ -116,8 +130,8 @@ class Login extends Component {
             <TextField
               id="standard-full-width"
               type="address"
-              label="Private Key"
-              placeholder="Enter Your Private Key"
+              label="Account Address"
+              placeholder="Enter Your Account Address(make sure to connect this address with metamask)"
               fullWidth
               value={this.state.address}
               margin="normal"

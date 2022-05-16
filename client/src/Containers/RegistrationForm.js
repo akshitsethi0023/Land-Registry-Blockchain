@@ -38,7 +38,7 @@ class Register extends Component {
 
   componentDidMount = async () => {
     const web3 = window.web3
-    const acc = await window.localStorage.getItem('web3account')
+    const acc = await window.localStorage.getItem('acc')
     this.setState({ account: acc })
     // console.log(acc)
     const networkId = await web3.eth.net.getId()

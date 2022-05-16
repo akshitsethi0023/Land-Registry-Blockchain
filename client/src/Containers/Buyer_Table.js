@@ -124,15 +124,6 @@ class table extends Component {
       message: `${this.state.uname} has requested to buy the property. Please check your account for more details.`,
     }
     console.log(data)
-    await axios
-      .post('http://localhost:3001/send_mail', data)
-      .then((response) => {
-        if (response.status == 200) {
-          alert('Message Sent.')
-        } else {
-          alert('Message failed to send.')
-        }
-      })
     window.location.reload()
   }
   handleBuy = async (id, amount) => {

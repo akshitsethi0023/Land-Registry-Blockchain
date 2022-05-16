@@ -47,12 +47,10 @@ class Register extends Component {
     this.state = {
       name: '',
       email: '',
-      //   password: '',
       address: '',
       postalCode: '',
       city: '',
-      contact: '',
-      // authenticated: false,
+      contact: ''
     }
   }
 
@@ -61,19 +59,22 @@ class Register extends Component {
     const accounts = await web3.eth.getAccounts()
     await window.localStorage.setItem('web3account', accounts[0])
     this.setState({ account: accounts[0] })
+
     const networkId = await web3.eth.net.getId()
-    console.log("networkId" + networkId)
     const LandData = Land.networks[networkId]
-    console.log("land " + LandData)
+    
     if (LandData) {
       const landList = new web3.eth.Contract(Land.abi, LandData.address)
       this.setState({ landList })
-    } else {
+    } 
+    else {
       window.alert('Token contract not deployed to detected network.')
     }
+
     if (window.localStorage.getItem('authenticated') === 'true')
       this.props.history.push('/dashboard')
   }
+
   validateEmail = (emailField) => {
     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
     if (reg.test(emailField) == false) {
@@ -81,12 +82,16 @@ class Register extends Component {
     }
     return true
   }
+
   handleChange = (name) => (event) => {
     this.setState({ [name]: event.target.value })
   }
 
   login = async (data) => {
-    console.log('login')
+    if (this.state.account != data.address) {
+      alert('Account entered not same as account connected with metamask')
+      window.location = '/signup'
+    }
     await this.state.landList.methods
       .addUser(
         data.address,
@@ -98,10 +103,10 @@ class Register extends Component {
       )
       .send({ from: this.state.account, gas: 1000000 })
       .on('receipt', function (receipt) {
-        // console.log(receipt)
         if (!receipt) {
           console.log('Could not add User. Please try again')
-        } else {
+        } 
+        else {
           console.log('User has been added successfully!')
           window.alert('User has been added successfully!')
           window.location = '/login'
@@ -127,42 +132,15 @@ class Register extends Component {
       this.state.postalCode
     ) {
       if (this.validateEmail(this.state.email)) {
-        console.log("sahi")
-        axios.post('http://localhost:3001/signup', data).then(
-          (response) => {
-            console.log(response)
-            if (response.status == 200) {
-              this.setState({
-                name: '',
-                email: '',
-                address: '',
-                postalCode: '',
-                city: '',
-                contact: '',
-              })
-            }
-
-            try {
-              this.login(data)
-            } catch (error) {
-              console.log('error:', error)
-            }
-          },
-          (error) => {
-            this.setState({ loading: false })
-            alert('User already exist. Try with another email address')
-            this.setState({
-              name: '',
-              email: '',
-              address: '',
-              postalCode: '',
-              city: '',
-              contact: '',
-            })
-          },
-        )
-      } else alert('Please, Enter correct Email address')
-    } else {
+        try {
+          this.login(data)
+        } catch (error) {
+          console.log('error:', error)
+        }
+      }
+      else alert('Please, Enter correct Email address')
+    }
+    else {
       alert('All fields are required')
     }
   }
@@ -215,8 +193,8 @@ class Register extends Component {
             <TextField
               id="standard-full-width"
               type="address"
-              label="Private Key"
-              placeholder="Enter Your Private Key"
+              label="Account Address"
+              placeholder="Enter Your Account Address(make sure to connect this address with metamask)"
               fullWidth
               value={this.state.address}
               margin="normal"

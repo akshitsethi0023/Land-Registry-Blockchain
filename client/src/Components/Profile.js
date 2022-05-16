@@ -26,8 +26,9 @@ class Login extends Component {
     const web3 = window.web3
     const accounts = await web3.eth.getAccounts()
     await window.localStorage.setItem('web3account', accounts[0])
-    this.setState({ account: accounts[0] })
-    const balance = await web3.eth.getBalance(accounts[0])
+    const acc = window.localStorage.getItem('acc')
+    this.setState({ account: acc })
+    const balance = await web3.eth.getBalance(acc)
     // const wallet = await web3.utils.toWei(balance, 'ether')
     // balance = balance / 1000000000000000000
     this.setState({ balance: balance / 1000000000000000000 })
