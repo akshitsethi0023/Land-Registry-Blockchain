@@ -77,22 +77,20 @@ class Dashboard extends Component {
     const accounts = await web3.eth.getAccounts()
     await window.localStorage.setItem('web3account', accounts[0])
     this.setState({ account: accounts[0] })
+
     const networkId = await web3.eth.net.getId()
     const LandData = Land.networks[networkId]
+
     if (LandData) {
       const landList = new web3.eth.Contract(Land.abi, LandData.address)
       this.setState({ landList })
-    } else {
+    }
+    else {
       window.alert('Token contract not deployed to detected network.')
     }
-    const ui = window.localStorage.getItem('acc')
-    this.setState({acc: ui})
-    if (
-      !window.localStorage.getItem('authenticated') ||
-      window.localStorage.getItem('authenticated') === 'false'
-    )
+    if (!window.localStorage.getItem('authenticated') || window.localStorage.getItem('authenticated') === 'false')
       this.props.history.push('/login')
-    // const category=window.localStorage.getItem('category');
+      
     this.setState({ isLoading: false })
     this.getDetails()
     this.getDetails1()
@@ -139,9 +137,8 @@ class Dashboard extends Component {
   }
 
   async propertyDetails1(property) {
-    let details = await this.state.landList.methods
-      .landInfoOwner(property)
-      .call()
+    let details = await this.state.landList.methods.landInfoOwner(property).call()
+
     ipfs.cat(details[1], (err, res) => {
       if (err) {
         console.error(err)
@@ -151,8 +148,8 @@ class Dashboard extends Component {
       console.log('temp', temp)
 
       if (
-        details[0] != this.state.acc &&
-        (details[5] == this.state.acc ||
+        details[0] != this.state.account &&
+        (details[5] == this.state.account ||
           details[5] == '0x0000000000000000000000000000000000000000')
       ) {
         this.state.assetList1.push({
@@ -187,9 +184,8 @@ class Dashboard extends Component {
   }
 
   async getDetails() {
-    const properties = await this.state.landList.methods
-      .viewAssets()
-      .call({ from: this.state.acc })
+    const properties = await this.state.landList.methods.viewAssets().call({ from: this.state.account })
+    
     for (let item of properties) {
       this.propertyDetails(item)
     }

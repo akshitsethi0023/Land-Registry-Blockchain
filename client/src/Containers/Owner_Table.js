@@ -100,8 +100,10 @@ class table extends Component {
     const accounts = await web3.eth.getAccounts()
     await window.localStorage.setItem('web3account', accounts[0])
     this.setState({ account: accounts[0] })
+
     const networkId = await web3.eth.net.getId()
     const LandData = Land.networks[networkId]
+
     if (LandData) {
       const landList = new web3.eth.Contract(Land.abi, LandData.address)
       this.setState({ landList })
@@ -118,6 +120,7 @@ class table extends Component {
 
     window.location.reload()
   }
+  
   handleProcessRequest = async (id, n, address, name) => {
     await this.state.landList.methods.processRequest(id, n).send({
       from: this.state.account,
