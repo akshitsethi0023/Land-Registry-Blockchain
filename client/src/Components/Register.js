@@ -99,7 +99,7 @@ class Register extends Component {
         else {
           console.log('User has been added successfully!')
           window.alert('User has been added successfully!')
-          window.location = '/register'
+          window.location = '/login'
         }
       })
   }
