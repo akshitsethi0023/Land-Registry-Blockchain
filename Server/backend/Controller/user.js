@@ -4,37 +4,8 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 var User = require('../Model/User')
 var Govt = require('../Model/Government_Registrar')
-router.post('/signup', async (req, res) => {
-  const { email, name, contact, address, city, postalCode } = req.body
-  try {
-    let user = await User.findOne({
-      email,
-    })
-    if (user) {
-      return res.status(400).json({
-        message: 'User Already Exists',
-      })
-    }
-
-    user = new User({
-      email,
-      name,
-      contact,
-      address,
-      city,
-      postalCode,
-    })
-
-    await user.save()
-    res.status(200).send('Thanks for registering!')
-  } catch (err) {
-    console.log(err.message)
-    res.status(500).send('Error in Saving')
-  }
-})
 
 router.post('/register_govt', async (req, res) => {
-  // Insert details straight into MongoDB
     try {
       
       const username="Delhi Government";
