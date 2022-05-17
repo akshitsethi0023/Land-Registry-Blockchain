@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { Container, CircularProgress } from '@material-ui/core'
 import Land from '../contracts/LandRegistry.json'
 import ipfs from '../ipfs'
-import OwnerTable from '../Containers/Owner_Table'
-import BuyerTable from '../Containers/Buyer_Table'
+import RegisteredLands from '../Containers/Govt_Table_Registration'
+import TransferedLands from '../Containers/Govt_Table_Transfer'
 import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
@@ -90,18 +90,21 @@ class Dashboard extends Component {
       this.props.history.push('/login')
       
     this.setState({ isLoading: false })
-    this.getOwnerDetails()
-    this.getAllLandDetails()
+    this.getRegistrationDetails() 
+    this.getTransferDetails()
   }
 
-  async ownerPropertyDetails(property) {
-    let details = await this.state.landList.methods.landInfoOwner(property).call()
-
+  async propertyDetails(property) {
+    // console.log(property)
+    let details = await this.state.landList.methods
+      .landInfoOwner(property)
+      .call()
     ipfs.cat(details[1], (err, res) => {
       if (err) {
         console.error(err)
         return
       }
+      console.log(details)
       const temp = JSON.parse(res.toString())
       this.state.assetList.push({
         property: property,
@@ -132,62 +135,53 @@ class Dashboard extends Component {
       this.setState({ assetList: [...this.state.assetList] })
     })
   }
+  async getRegistrationDetails() {
+    const properties = await this.state.landList.methods.Assets().call()
+    // console.log(properties)
+    for (let item of properties) {
+      console.log('item:' + item)
+      this.propertyDetails(item)
+    }
+  }
 
-  async allPropertyDetails(property) {
-    let details = await this.state.landList.methods.landInfoOwner(property).call()
+  async TransferedPropertyDetails(property) {
 
+    let details1 = await this.state.landList.methods
+      .getTranferInfo(property)
+      .call()
+    let details = await this.state.landList.methods
+      .landInfoOwner(property)
+      .call()
     ipfs.cat(details[1], (err, res) => {
       if (err) {
         console.error(err)
         return
       }
+      console.log(details)
       const temp = JSON.parse(res.toString())
-      console.log('temp', temp)
-
-      if (details[0] != this.state.account && (details[5] == this.state.account || details[5] == '0x0000000000000000000000000000000000000000')) {
-        this.state.assetList1.push({
-          property: property,
-          uniqueID: details[1],
-          name: temp.name,
-          key: details[0],
-          email: temp.email,
-          contact: temp.contact,
-          pan: temp.pan,
-          occupation: temp.occupation,
-          oaddress: temp.address,
-          ostate: temp.state,
-          ocity: temp.city,
-          opostalCode: temp.postalCode,
-          laddress: temp.laddress,
-          lstate: temp.lstate,
-          lcity: temp.lcity,
-          lpostalCode: temp.lpostalCode,
-          larea: temp.larea,
-          lamount: details[2],
-          isGovtApproved: details[3],
-          isAvailable: details[4],
-          requester: details[5],
-          requestStatus: details[6],
-          document: temp.document,
-          images: temp.images,
-        })
-        this.setState({ assetList1: [...this.state.assetList1] })
-      }
+      this.state.assetList1.push({
+        buyer: details1[0],
+        seller: details1[1],
+        key: property,
+        laddress: temp.laddress,
+        lstate: temp.lstate,
+        lcity: temp.lcity,
+        lpostalCode: temp.lpostalCode,
+        larea: temp.larea,
+        lamount: details[2],
+        isGovtApproved: details[3],
+        isAvailable: details[4]
+      })
+      
     })
+      this.setState({ assetList1: [...this.state.assetList1] })
   }
+  async getTransferDetails() {
+    const transfers = await this.state.landList.methods.getTransferarr().call()
+    // console.log(properties)
 
-  async getOwnerDetails() {
-    const properties = await this.state.landList.methods.viewAssets().call({ from: this.state.account })
-
-    for (let item of properties) {
-      this.ownerPropertyDetails(item)
-    }
-  }
-  async getAllLandDetails() {
-    const properties = await this.state.landList.methods.Assets().call()
-
-    for (let item of properties) {
-      this.allPropertyDetails(item)
+    for (let property of transfers) {
+      this.TransferedPropertyDetails(property)
     }
   }
 
@@ -219,25 +213,23 @@ class Dashboard extends Component {
                   variant="fullWidth"
                   aria-label="full width tabs example"
                 >
-                  <Tab label="My Lands" {...a11yProps(0)} />
-                  <Tab label="Available Lands to Buy" {...a11yProps(1)} />
-                  <Tab label="Register your Land" {...a11yProps(2)} />
+                  <Tab label="Registered Lands" {...a11yProps(0)} />
+                  <Tab label="Transfered Lands" {...a11yProps(1)} />
                 </Tabs>
               </AppBar>
               
               <TabPanel value={this.state.value} index={0}>
                 <div style={{ marginTop: '60px' }}>
-                  <OwnerTable assetList={this.state.assetList} />
+                  <RegisteredLands assetList={this.state.assetList} />
                 </div>
               </TabPanel>
+
               <TabPanel value={this.state.value} index={1}>
                 <div style={{ marginTop: '60px' }}>
-                  <BuyerTable assetList={this.state.assetList1} />
+                  <TransferedLands assetList={this.state.assetList1} />
                 </div>
               </TabPanel>
-              <TabPanel value={this.state.value} index={2}>
-                <RegistrationForm />
-              </TabPanel>
+              
             </div>
           </Container>
         </div>

@@ -12,7 +12,7 @@ import Dashboard from './Components/Dashboard'
 import Header from './Containers/Header'
 import Govt_login from './Components/Govt_Login'
 import RegistrationForm from './Containers/RegistrationForm'
-import Dashboard_Govt from './Components/Dashboard_Govt'
+import Dashboard_Govt from './Components/Govt_dashboard'
 import Home from './Components/Home'
 
 class App extends Component {

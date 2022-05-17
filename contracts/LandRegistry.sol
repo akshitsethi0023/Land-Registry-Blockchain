@@ -26,9 +26,16 @@ contract LandRegistry {
         address requester;
         reqStatus requestStatus;
     }
+    struct transferDetails{
+        address buyer;
+        address payable seller;
+        uint256 key;
+    }
 
     address[] userarr;
     uint256[] assets;
+    uint256[] transferarr;
+
     address owner;
     enum reqStatus {Default, Pending, Rejected, Approved}
 
@@ -43,6 +50,7 @@ contract LandRegistry {
     mapping(address => uint256[]) profile;      // address of user ==> list of land assets he owns
     mapping(address => user) public users;      // address of user ==> details of user.
     mapping(uint256 => landDetails) public land;// key of land     ==> details of land.
+    mapping(uint256 => transferDetails) public transfers;   // key of land     ==> transfer details of land.
 
     function addUser(
         address user_address, 
@@ -132,6 +140,37 @@ contract LandRegistry {
         return assets;
     }
 
+    function getTransferarr() public view returns (uint256[] memory) {
+        return transferarr;
+    }
+
+    function getTranferInfo(uint256 property) public view returns (
+        address, 
+        address payable){
+
+            return (
+                transfers[property].buyer,
+                transfers[property].seller
+            );
+    
+    }
+
+
+    function tranferComplete(uint256 property) public {
+        uint ind;
+        for (uint i = 0; i < transferarr.length; i++) {
+            if (transferarr[i] == property){
+                ind = i;
+                break;
+            }
+        }
+
+        transferarr[ind] = transferarr[transferarr.length - 1];
+        //delete transferarr[transferarr.length - 1];
+        //transferarr.length--;
+        transferarr.pop();
+        
+    }
     function landInfoOwner(uint256 id)
         public
         view
@@ -195,13 +234,34 @@ contract LandRegistry {
 
         land[property].id.transfer(land[property].lamount * 1000000000000000000);
         removeOwnership(land[property].id, property);
-        
+
         land[property].id = msg.sender;
         land[property].isGovtApproved = "Not Approved";
         land[property].isAvailable = "Not yet approved by the govt.";
         land[property].requester = address(0);
         land[property].requestStatus = reqStatus.Default;
         profile[msg.sender].push(property);
+
+        transferLand(
+            property, 
+            land[property].id, 
+            land[property].requester);
+        
+
+    }
+    function transferLand(
+        uint property, 
+        address payable seller, 
+        address buyer) 
+        private {
+            
+        transfers[property] = transferDetails(
+            buyer,
+            seller,
+            property
+        );
+        transferarr.push(property);
+
     }
 
     function removeOwnership(address previousOwner, uint256 id) private {

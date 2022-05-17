@@ -40,7 +40,7 @@ class Register extends Component {
     const accounts = await web3.eth.getAccounts()
     await window.localStorage.setItem('web3account', accounts[0])
     this.setState({ account: accounts[0] })
-    
+
     const networkId = await web3.eth.net.getId()
     const LandContract = Land.networks[networkId]
 
