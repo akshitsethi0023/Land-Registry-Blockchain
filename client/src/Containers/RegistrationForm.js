@@ -7,7 +7,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import Land from '../contracts/LandRegistry.json'
 import ipfs from '../ipfs'
-import axios from 'axios'
 
 class Register extends Component {
   constructor(props) {
@@ -45,8 +44,8 @@ class Register extends Component {
     const LandData = Land.networks[networkId]
 
     if (LandData) {
-      const landList = new web3.eth.Contract(Land.abi, LandData.address)
-      this.setState({ landList })
+      const LandContractMethods = new web3.eth.Contract(Land.abi, LandData.address)
+      this.setState({ LandContractMethods })
     } 
     else {
       window.alert('Token contract not deployed to detected network.')
@@ -68,7 +67,7 @@ class Register extends Component {
   }
 
   async propertyID(laddress, lamount) {
-    const propertyId = await this.state.landList.methods.computeId(laddress, lamount).call()
+    const propertyId = await this.state.LandContractMethods.methods.computeId(laddress, lamount).call()
     this.setState({ propertyId })
   }
 
@@ -80,7 +79,7 @@ class Register extends Component {
         console.error(error)
         return
       }
-      this.state.landList.methods.Registration(
+      this.state.LandContractMethods.methods.Registration(
           account,
           result[0].hash,
           laddress,

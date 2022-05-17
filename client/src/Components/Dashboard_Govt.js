@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
-import { withRouter, Redirect } from 'react-router-dom'
-import { Button, Container, CircularProgress } from '@material-ui/core'
+import { Container, CircularProgress } from '@material-ui/core'
 import Land from '../contracts/LandRegistry.json'
 import ipfs from '../ipfs'
 import Table from '../Containers/Govt_Table'
 import { withStyles } from '@material-ui/core/styles'
-import Web3 from 'web3'
 import jwtDecode from 'jwt-decode'
 
 const styles = (theme) => ({

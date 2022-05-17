@@ -1,25 +1,21 @@
 import React, { Component } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
-import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Land from '../contracts/LandRegistry.json'
 import Grid from '@material-ui/core/Grid'
-import { Card } from '@material-ui/core'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Slide from '@material-ui/core/Slide'
-import axios from 'axios'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -102,18 +98,18 @@ class table extends Component {
     this.setState({ account: accounts[0] })
 
     const networkId = await web3.eth.net.getId()
-    const LandData = Land.networks[networkId]
+    const LandContract = Land.networks[networkId]
 
-    if (LandData) {
-      const landList = new web3.eth.Contract(Land.abi, LandData.address)
-      this.setState({ landList })
+    if (LandContract) {
+      const LandContractMethods = new web3.eth.Contract(Land.abi, LandContract.address)
+      this.setState({ LandContractMethods })
     } else {
       window.alert('Token contract not deployed to detected network.')
     }
   }
 
   handleAccept = async (id) => {
-    await this.state.landList.methods.makeAvailable(id).send({
+    await this.state.LandContractMethods.methods.makeAvailable(id).send({
       from: this.state.account,
       gas: 1000000,
     })
@@ -122,11 +118,11 @@ class table extends Component {
   }
 
   handleProcessRequest = async (id, n, address, name) => {
-    await this.state.landList.methods.processRequest(id, n).send({
+    await this.state.LandContractMethods.methods.processRequest(id, n).send({
       from: this.state.account,
       gas: 1000000,
     })
-    const user = await this.state.landList.methods.getUser(address).call()
+    const user = await this.state.LandContractMethods.methods.getUser(address).call()
 
     if (user) {
       this.setState({
@@ -144,7 +140,7 @@ class table extends Component {
 
   handleRequesterInfo = async (address) => {
     this.setState({ open: true })
-    const user = await this.state.landList.methods.getUser(address).call()
+    const user = await this.state.LandContractMethods.methods.getUser(address).call()
 
     if (user) {
       this.setState({
@@ -205,7 +201,7 @@ class table extends Component {
                       const value = row[column.id]
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.id == 'isAvailable' && value == 'GovtApproved' ? (
+                          {column.id === 'isAvailable' && value === 'GovtApproved' ? (
                             <Button
                               variant="contained"
                               color="primary"
@@ -214,7 +210,7 @@ class table extends Component {
                               Make Available
                             </Button>
                           ) : 
-                          column.id == 'isAvailable' && value == 'Pending' ? (
+                          column.id === 'isAvailable' && value === 'Pending' ? (
                             <Grid container spacing={2}>
                               <Grid item>
                                 <Button
@@ -237,9 +233,8 @@ class table extends Component {
                                 </Button>
                               </Grid>
                             </Grid>
-                          ) : column.id == 'requester' &&
-                            value !=
-                              '0x0000000000000000000000000000000000000000' ? (
+                          ) : column.id === 'requester' &&
+                            value !== '0x0000000000000000000000000000000000000000' ? (
                             <Button
                               variant="contained"
                               color="primary"
@@ -249,15 +244,14 @@ class table extends Component {
                             >
                               View Request
                             </Button>
-                          ) : column.id == 'requester' &&
-                            value ==
-                              '0x0000000000000000000000000000000000000000' ? (
+                          ) : column.id === 'requester' &&
+                            value === '0x0000000000000000000000000000000000000000' ? (
                             <span>No Requestor</span>
-                          ) : column.id == 'document' ? (
+                          ) : column.id === 'document' ? (
                             <a href={row['document']} download>
                               Download Document
                             </a>
-                          ) : column.id == 'images' ? (
+                          ) : column.id === 'images' ? (
                             <Button
                               variant="contained"
                               color="primary"

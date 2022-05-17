@@ -1,7 +1,4 @@
 import React, { Component } from 'react'
-import Typewriter from 'typewriter-effect'
-import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button'
 
 export default class Home extends Component {
   render() {

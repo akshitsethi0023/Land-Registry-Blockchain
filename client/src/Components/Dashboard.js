@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { withRouter, Redirect } from 'react-router-dom'
-import { Button, Container, CircularProgress } from '@material-ui/core'
+import { Container, CircularProgress } from '@material-ui/core'
 import Land from '../contracts/LandRegistry.json'
 import ipfs from '../ipfs'
-import Table from '../Containers/Owner_Table'
-import AvailableTable from '../Containers/Buyer_Table'
+import OwnerTable from '../Containers/Owner_Table'
+import BuyerTable from '../Containers/Buyer_Table'
 import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
@@ -12,7 +11,6 @@ import Tab from '@material-ui/core/Tab'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import PropTypes from 'prop-types'
-// import SwipeableViews from 'react-swipeable-views'
 import RegistrationForm from '../Containers/RegistrationForm'
 
 function TabPanel(props) {
@@ -221,20 +219,20 @@ class Dashboard extends Component {
                   variant="fullWidth"
                   aria-label="full width tabs example"
                 >
-                  <Tab label="My Properties" {...a11yProps(0)} />
-                  <Tab label="Available Properties" {...a11yProps(1)} />
-                  <Tab label="Regsiter Land" {...a11yProps(2)} />
+                  <Tab label="My Lands" {...a11yProps(0)} />
+                  <Tab label="Available Lands to Buy" {...a11yProps(1)} />
+                  <Tab label="Register your Land" {...a11yProps(2)} />
                 </Tabs>
               </AppBar>
               
               <TabPanel value={this.state.value} index={0}>
                 <div style={{ marginTop: '60px' }}>
-                  <Table assetList={this.state.assetList} />
+                  <OwnerTable assetList={this.state.assetList} />
                 </div>
               </TabPanel>
               <TabPanel value={this.state.value} index={1}>
                 <div style={{ marginTop: '60px' }}>
-                  <AvailableTable assetList={this.state.assetList1} />
+                  <BuyerTable assetList={this.state.assetList1} />
                 </div>
               </TabPanel>
               <TabPanel value={this.state.value} index={2}>

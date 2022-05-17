@@ -1,13 +1,7 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import IconButton from '@material-ui/core/IconButton'
-import Typography from '@material-ui/core/Typography'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
-import AccountCircle from '@material-ui/icons/AccountCircle'
-import MoreIcon from '@material-ui/icons/MoreVert'
 import Land from '../contracts/LandRegistry.json'
 import Button from '@material-ui/core/Button'
 
@@ -54,10 +48,11 @@ class Header extends Component {
     // console.log(acc)
     
     const networkId = await web3.eth.net.getId()
-    const LandData = Land.networks[networkId]
-    if (LandData) {
-      const landList = new web3.eth.Contract(Land.abi, LandData.address)
-      this.setState({ landList })
+    const LandContract = Land.networks[networkId]
+
+    if (LandContract) {
+      const LandContractMethods = new web3.eth.Contract(Land.abi, LandContract.address)
+      this.setState({ LandContractMethods })
     } else {
       window.alert('Token contract not deployed to detected network.')
     }

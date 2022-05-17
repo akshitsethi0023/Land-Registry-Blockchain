@@ -5,8 +5,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  withRouter,
-  Redirect,
 } from 'react-router-dom'
 import Register from './Components/Register'
 import Login from './Components/Login'

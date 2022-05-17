@@ -1,18 +1,15 @@
 import React, { Component } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
-import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import Land from '../contracts/LandRegistry.json'
-import axios from 'axios'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -92,36 +89,25 @@ class table extends Component {
     const accounts = await web3.eth.getAccounts()
     await window.localStorage.setItem('web3account', accounts[0])
     this.setState({ account: accounts[0] })
+
     const networkId = await web3.eth.net.getId()
-    const LandData = Land.networks[networkId]
-    if (LandData) {
-      const landList = new web3.eth.Contract(Land.abi, LandData.address)
-      this.setState({ landList })
+    const LandContract = Land.networks[networkId]
+
+    if (LandContract) {
+      const LandContractMethods = new web3.eth.Contract(Land.abi, LandContract.address)
+      this.setState({ LandContractMethods })
     } else {
       window.alert('Token contract not deployed to detected network.')
     }
   }
 
   handleAccept = async (id, status, status1, email, number) => {
-    const flag = await this.state.landList.methods
+    const flag = await this.state.LandContractMethods.methods
       .govtStatus(id, status, status1)
       .send({
         from: this.state.account,
         gas: 1000000,
       })
-    let data = {
-      lemail: email,
-      subject:
-        status == 'Approved'
-          ? 'Government has accepted your request.'
-          : 'Government has rejected your request.',
-      message:
-        status == 'Approved'
-          ? 'Government has accepted your request. Please check your account for more details.'
-          : 'Government has rejected your request. Please check your account for more details.',
-      number,
-    }
-    console.log(data)
     this.setState({ flag })
     if (flag) window.location.reload()
   }
@@ -159,7 +145,7 @@ class table extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {assetList.map((row, index) => {
+              {assetList.map((row) => {
                 return (
                   <TableRow hover role="checkbox" key={row.code}>
                     {columns.map((column) => {

@@ -1,16 +1,13 @@
 import React, { Component } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
-import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import Grid from '@material-ui/core/Grid'
 import Land from '../contracts/LandRegistry.json'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -18,7 +15,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Slide from '@material-ui/core/Slide'
-import axios from 'axios'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -95,16 +91,16 @@ class table extends Component {
     this.setState({ account: accounts[0] })
 
     const networkId = await web3.eth.net.getId()
-    const LandData = Land.networks[networkId]
+    const LandContract = Land.networks[networkId]
 
-    if (LandData) {
-      const landList = new web3.eth.Contract(Land.abi, LandData.address)
-      this.setState({ landList })
+    if (LandContract) {
+      const LandContractMethods = new web3.eth.Contract(Land.abi, LandContract.address)
+      this.setState({ LandContractMethods })
     } else {
       window.alert('Token contract not deployed to detected network.')
     }
     
-    const user = await this.state.landList.methods.getUser(accounts[0]).call()
+    const user = await this.state.LandContractMethods.methods.getUser(accounts[0]).call()
     this.setState({
       uid: user[0],
       uname: user[1],
@@ -116,8 +112,8 @@ class table extends Component {
     })
   }
 
-  handleAccept = async (id) => {
-    await this.state.landList.methods.requstToLandOwner(id).send({
+  handleRequest = async (id) => {
+    await this.state.LandContractMethods.methods.requstToLandOwner(id).send({
       from: this.state.account,
       gas: 1000000,
     })
@@ -128,7 +124,7 @@ class table extends Component {
     amount = amount * 1000000000000000000
     let mValue = parseInt(amount)
     let StringValue = mValue.toString()
-    await this.state.landList.methods.buyProperty(id).send({
+    await this.state.LandContractMethods.methods.buyProperty(id).send({
       from: this.state.account,
       value: StringValue,
     })
@@ -177,21 +173,21 @@ class table extends Component {
                       const value = row[column.id]
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.id == 'isAvailable' && value == 'Available' ? (
+                          {column.id === 'isAvailable' && value === 'Available' ? (
                             <Button
                               variant="contained"
                               color="primary"
                               onClick={() =>
-                                this.handleAccept(row['property'])
+                                this.handleRequest(row['property'])
                               }
                             >
                               Request to Buy
                             </Button>
                           ) : 
-                        column.id == 'isAvailable' && value == 'GovtApproved' ? (
+                        column.id === 'isAvailable' && value === 'GovtApproved' ? (
                             <div>Unavailable</div>
                           ) : 
-                          column.id == 'isAvailable' && value == 'Approved' ? (
+                          column.id === 'isAvailable' && value === 'Approved' ? (
                             <Button
                               variant="contained"
                               color="primary"

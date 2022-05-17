@@ -1,15 +1,8 @@
 import React, { Component } from 'react'
-import Input from '@material-ui/core/Input'
-import InputLabel from '@material-ui/core/InputLabel'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import FormControl from '@material-ui/core/FormControl'
 import TextField from '@material-ui/core/TextField'
-import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import { Container } from '@material-ui/core'
 import SendIcon from '@material-ui/icons/Send'
-import axios from 'axios'
-import { withRouter } from 'react-router-dom'
 import Land from '../contracts/LandRegistry.json'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -61,11 +54,11 @@ class Register extends Component {
     this.setState({ account: accounts[0] })
 
     const networkId = await web3.eth.net.getId()
-    const LandData = Land.networks[networkId]
+    const landContract = Land.networks[networkId]
     
-    if (LandData) {
-      const landList = new web3.eth.Contract(Land.abi, LandData.address)
-      this.setState({ landList })
+    if (landContract) {
+      const landContractMethods = new web3.eth.Contract(Land.abi, landContract.address)
+      this.setState({ landContractMethods })
     } 
     else {
       window.alert('Token contract not deployed to detected network.')
@@ -77,29 +70,26 @@ class Register extends Component {
 
   validateEmail = (emailField) => {
     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
-    if (reg.test(emailField) == false) {
-      return false
-    }
-    return true
+    return reg.test(emailField)
   }
 
   handleChange = (name) => (event) => {
     this.setState({ [name]: event.target.value })
   }
 
-  login = async (data) => {
-    if (this.state.account != data.address) {
+  register = async (user) => {
+    if (this.state.account !== user.address) {
       alert('Account entered not same as account connected with metamask')
       window.location = '/signup'
     }
-    await this.state.landList.methods
+    await this.state.landContractMethods.methods
       .addUser(
-        data.address,
-        data.name,
-        data.contact,
-        data.email,
-        data.postalCode,
-        data.city,
+        user.address,
+        user.name,
+        user.contact,
+        user.email,
+        user.postalCode,
+        user.city,
       )
       .send({ from: this.state.account, gas: 1000000 })
       .on('receipt', function (receipt) {
@@ -109,13 +99,13 @@ class Register extends Component {
         else {
           console.log('User has been added successfully!')
           window.alert('User has been added successfully!')
-          window.location = '/login'
+          window.location = '/register'
         }
       })
   }
 
   handleSubmit = async () => {
-    let data = {
+    let user = {
       name: this.state.name,
       email: this.state.email,
       contact: this.state.contact,
@@ -123,17 +113,10 @@ class Register extends Component {
       city: this.state.city,
       postalCode: this.state.postalCode,
     }
-    if (
-      this.state.name &&
-      this.state.email &&
-      this.state.contact &&
-      this.state.address &&
-      this.state.city &&
-      this.state.postalCode
-    ) {
+    if (this.state.name && this.state.email && this.state.contact && this.state.address && this.state.city && this.state.postalCode) {
       if (this.validateEmail(this.state.email)) {
         try {
-          this.login(data)
+          this.register(user)
         } catch (error) {
           console.log('error:', error)
         }

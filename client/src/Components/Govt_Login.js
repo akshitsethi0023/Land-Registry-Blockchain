@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
-import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import { Container } from '@material-ui/core'
 import SendIcon from '@material-ui/icons/Send'
 import axios from 'axios'
-import { withRouter, Redirect } from 'react-router-dom'
 import Land from '../contracts/LandRegistry.json'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -51,10 +49,10 @@ class Login extends Component {
     this.setState({ account: acc })
     console.log(acc)
     const networkId = await web3.eth.net.getId()
-    const LandData = Land.networks[networkId]
-    if (LandData) {
-      const landList = new web3.eth.Contract(Land.abi, LandData.address)
-      this.setState({ landList })
+    const landContract = Land.networks[networkId]
+    if (landContract) {
+      const landContractMethods = new web3.eth.Contract(Land.abi, landContract.address)
+      this.setState({ landContractMethods })
     } else {
       window.alert('Token contract not deployed to detected network.')
     }
@@ -72,14 +70,11 @@ class Login extends Component {
     }
     if (this.state.username && this.state.password) {
       axios.post('http://localhost:3001/login', data).then((response) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           window.alert('Login Successful')
           window.localStorage.setItem('authenticated', true)
           console.log(response.data)
           window.localStorage.setItem('token', response.data)
-
-          // this.setState({ user: response.data })
-          // console.log(this.state.user)
           window.location = '/dashboard_govt'
           this.setState({
             username: '',
@@ -99,7 +94,7 @@ class Login extends Component {
     }
   }
   render() {
-    const { classes, assetList } = this.props
+    const { classes } = this.props
 
     return (
       <div className="profile-bg">

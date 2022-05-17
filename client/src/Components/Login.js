@@ -1,14 +1,10 @@
 import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
-import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import { Container } from '@material-ui/core'
 import SendIcon from '@material-ui/icons/Send'
-import axios from 'axios'
-import { withRouter, Redirect } from 'react-router-dom'
 import Land from '../contracts/LandRegistry.json'
 import { withStyles } from '@material-ui/core/styles'
-import Dashboard from './Dashboard'
 
 const styles = () => ({
   root: {
@@ -53,11 +49,11 @@ class Login extends Component {
     this.setState({ account: accounts[0] })
     
     const networkId = await web3.eth.net.getId()
-    const LandData = Land.networks[networkId]
+    const landContract = Land.networks[networkId]
     
-    if (LandData) {
-      const landList = new web3.eth.Contract(Land.abi, LandData.address)
-      this.setState({ landList })
+    if (landContract) {
+      const landContractMethods = new web3.eth.Contract(Land.abi, landContract.address)
+      this.setState({ landContractMethods })
     } 
     else {
       window.alert('Token contract not deployed to detected network.')
@@ -76,18 +72,14 @@ class Login extends Component {
     let data = {
       address: this.state.address,
     }
-    if (this.state.account != data.address) {
+    if (this.state.account !== data.address) {
       alert('Account entered not same as account connected with metamask')
       window.location = '/login'
     }
 
     if (this.state.address) {
       try {
-        const user = await this.state.landList.methods
-          .getUser(data.address)
-          .call()
-
-        console.log(user)
+        const user = await this.state.landContractMethods.methods.getUser(data.address).call()
         if (user) {
           this.setState({
             uid: user[0],
@@ -122,7 +114,7 @@ class Login extends Component {
     }
   }
   render() {
-    const { classes, assetList } = this.props
+    const { classes} = this.props
     return (
       <div className="profile-bg">
         <Container style={{ marginTop: '40px' }} className={classes.root}>
