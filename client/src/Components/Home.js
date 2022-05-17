@@ -9,14 +9,15 @@ export default class Home extends Component {
         >
           Land Registry Application
           
-          <hr
+          
+          
+        </div>
+        <hr
             style={{
               border: '8px solid #fff',
-              width: '87%',
-              marginLeft: '0px',
-            }}
-          />
-        </div>
+              width: '80%',
+              marginLeft: '10%',
+            }}/>
         <div className="home-button">
           <button
             style={{ marginRight: '15px' }}

@@ -37,14 +37,15 @@ class Register extends Component {
 
   componentDidMount = async () => {
     const web3 = window.web3
-    const acc = await window.localStorage.getItem('account')
-    this.setState({ account: acc })
-  
+    const accounts = await web3.eth.getAccounts()
+    await window.localStorage.setItem('web3account', accounts[0])
+    this.setState({ account: accounts[0] })
+    
     const networkId = await web3.eth.net.getId()
-    const LandData = Land.networks[networkId]
+    const LandContract = Land.networks[networkId]
 
-    if (LandData) {
-      const LandContractMethods = new web3.eth.Contract(Land.abi, LandData.address)
+    if (LandContract) {
+      const LandContractMethods = new web3.eth.Contract(Land.abi, LandContract.address)
       this.setState({ LandContractMethods })
     } 
     else {
