@@ -22,10 +22,10 @@ const styles = () => ({
       borderBottomColor: '#fff',
     },
     '&  .MuiInput-underline:after': {
-      borderBottomColor: '#fff',
+      borderBottomColor: '#d4af37',
     },
     '&  .MuiInput-underline:hover': {
-      borderBottomColor: '#fff',
+      borderBottomColor: '#d4af37',
     },
     '& .MuiButton-containedPrimary': {
       backgroundColor: '#328888',
@@ -131,7 +131,7 @@ class Register extends Component {
     const { classes } = this.props
     return (
       <div className="profile-bg">
-        <Container style={{ marginTop: '40px' }} className={classes.root}>
+        <Container style={{ marginTop: '40px'}} className={classes.root}>
           <div className="register-text">Register Here</div>
           <div className="input">
             <TextField
@@ -213,10 +213,10 @@ class Register extends Component {
               onChange={this.handleChange('postalCode')}
             />
           </div>
-          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          <div style={{ marginTop: '20px', textAlign: 'center', color: '#d4af37' }}>
             <Button
+              style = {{color: '#000', backgroundColor: '#d4af37'}}
               variant="contained"
-              color="primary"
               endIcon={<SendIcon>submit</SendIcon>}
               onClick={this.handleSubmit}
             >
@@ -227,7 +227,7 @@ class Register extends Component {
             style={{ marginTop: '20px', textAlign: 'center', color: '#fff' }}
           >
             Already have an account?{'   '}{' '}
-            <a href="/login" style={{ color: '#328888' }}>
+            <a href="/login" style={{ color: '#d4af37' }}>
               Login here
             </a>
           </div>

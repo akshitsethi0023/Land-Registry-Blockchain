@@ -41,7 +41,7 @@ class Dashboard extends Component {
     const accounts = await web3.eth.getAccounts()
     await window.localStorage.setItem('web3account', accounts[0])
     this.setState({ account: accounts[0] })
-    
+
     this.setState({ isLoading: false })
     const networkId = await web3.eth.net.getId()
     const LandData = Land.networks[networkId]
@@ -115,14 +115,7 @@ class Dashboard extends Component {
       <div className="profile-bg">
         <div className={classes.container}>
           <Container style={{ marginTop: '40px' }}>
-            {/* <Button
-            style={{ marginTop: '30px' }}
-            variant="contained"
-            color="primary"
-            onClick={() => this.props.history.push('/registration_form')}
-          >
-            Register Land
-          </Button> */}
+            
             <div style={{ marginTop: '100px' }}>
               <Table assetList={this.state.assetList} />
             </div>
