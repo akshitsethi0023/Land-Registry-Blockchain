@@ -26,10 +26,10 @@ const styles = () => ({
       borderBottomColor: '#fff',
     },
     '&  .MuiInput-underline:after': {
-      borderBottomColor: '#fff',
+      borderBottomColor: '#d4af37',
     },
     '&  .MuiInput-underline:hover': {
-      borderBottomColor: '#fff',
+      borderBottomColor: '#d4af37',
     },
     '& .MuiButton-containedPrimary': {
       backgroundColor: '#328888',
@@ -146,8 +146,8 @@ class Login extends Component {
           <div>
             <div style={{ marginTop: '20px', textAlign: 'center' }}>
               <Button
+                style = {{color: '#000', backgroundColor: '#d4af37'}}
                 variant="contained"
-                color="primary"
                 endIcon={<SendIcon>submit</SendIcon>}
                 onClick={this.handleSubmit}
               >
@@ -159,7 +159,7 @@ class Login extends Component {
             style={{ marginTop: '20px', textAlign: 'center', color: '#fff' }}
           >
             Don't have an account?{'   '}{' '}
-            <a href="/signup" style={{ color: '#328888' }}>
+            <a href="/signup" style={{ color: '#d4af37' }}>
               Sign Up
             </a>
           </div>
