@@ -87,13 +87,16 @@ class table extends Component {
       open1: false,
     }
   }
+
   componentDidMount = async () => {
     const web3 = window.web3
     const accounts = await web3.eth.getAccounts()
     await window.localStorage.setItem('web3account', accounts[0])
     this.setState({ account: accounts[0] })
+
     const networkId = await web3.eth.net.getId()
     const LandData = Land.networks[networkId]
+
     if (LandData) {
       const landList = new web3.eth.Contract(Land.abi, LandData.address)
       this.setState({ landList })
@@ -113,25 +116,18 @@ class table extends Component {
     })
   }
 
-  handleAccept = async (id, email) => {
+  handleAccept = async (id) => {
     await this.state.landList.methods.requstToLandOwner(id).send({
       from: this.state.account,
       gas: 1000000,
     })
-    let data = {
-      lemail: email,
-      subject: `${this.state.uname} has requested to buy`,
-      message: `${this.state.uname} has requested to buy the property. Please check your account for more details.`,
-    }
-    console.log(data)
     window.location.reload()
   }
+
   handleBuy = async (id, amount) => {
-    // mValue += mValue / 10
     amount = amount * 1000000000000000000
     let mValue = parseInt(amount)
     let StringValue = mValue.toString()
-    console.log('mValue:', StringValue)
     await this.state.landList.methods.buyProperty(id).send({
       from: this.state.account,
       value: StringValue,
@@ -139,6 +135,7 @@ class table extends Component {
 
     window.location.reload()
   }
+
   handleViewImages = async (images) => {
     this.setState({ open1: true })
 
@@ -148,6 +145,7 @@ class table extends Component {
       })
     }
   }
+  
   handleClose1 = () => {
     this.setState({ open1: false })
   }
@@ -156,8 +154,6 @@ class table extends Component {
     const { classes, assetList } = this.props
     return (
       <Paper className={classes.root}>
-        {/* {console.log(assetList)} */}
-        {console.log(this.state)}
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -181,22 +177,21 @@ class table extends Component {
                       const value = row[column.id]
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.id == 'isAvailable' &&
-                          value == 'Available' ? (
+                          {column.id == 'isAvailable' && value == 'Available' ? (
                             <Button
                               variant="contained"
                               color="primary"
                               onClick={() =>
-                                this.handleAccept(row['property'], row['email'])
+                                this.handleAccept(row['property'])
                               }
                             >
                               Request to Buy
                             </Button>
-                          ) : column.id == 'isAvailable' &&
-                            value == 'GovtApproved' ? (
+                          ) : 
+                        column.id == 'isAvailable' && value == 'GovtApproved' ? (
                             <div>Unavailable</div>
-                          ) : column.id == 'isAvailable' &&
-                            value == 'Approved' ? (
+                          ) : 
+                          column.id == 'isAvailable' && value == 'Approved' ? (
                             <Button
                               variant="contained"
                               color="primary"
@@ -206,11 +201,13 @@ class table extends Component {
                             >
                               Buy
                             </Button>
-                          ) : column.id == 'document' ? (
+                          ) : 
+                          column.id == 'document' ? (
                             <a href={row['document']} download>
                               Download Document
                             </a>
-                          ) : column.id == 'images' ? (
+                          ) : 
+                          column.id == 'images' ? (
                             <Button
                               variant="contained"
                               color="primary"
@@ -220,9 +217,8 @@ class table extends Component {
                             >
                               View Images
                             </Button>
-                          ) : (
-                            value
-                          )}
+                          ) : 
+                          (value)}
                           <Dialog
                             open={this.state.open1}
                             TransitionComponent={Transition}

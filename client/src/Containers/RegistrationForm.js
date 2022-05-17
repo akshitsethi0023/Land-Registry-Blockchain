@@ -38,43 +38,38 @@ class Register extends Component {
 
   componentDidMount = async () => {
     const web3 = window.web3
-    const acc = await window.localStorage.getItem('acc')
+    const acc = await window.localStorage.getItem('account')
     this.setState({ account: acc })
-    // console.log(acc)
+  
     const networkId = await web3.eth.net.getId()
     const LandData = Land.networks[networkId]
+
     if (LandData) {
       const landList = new web3.eth.Contract(Land.abi, LandData.address)
       this.setState({ landList })
-    } else {
+    } 
+    else {
       window.alert('Token contract not deployed to detected network.')
     }
-    if (
-      !window.localStorage.getItem('authenticated') ||
-      window.localStorage.getItem('authenticated') === 'false'
-    )
+    if (!window.localStorage.getItem('authenticated'))
       this.props.history.push('/login')
   }
   validateEmail = (emailField) => {
     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
-    if (reg.test(emailField) == false) {
-      return false
-    }
-    return true
+    return reg.test(emailField)
   }
+
   handleChange = (name) => (event) => {
     this.setState({ [name]: event.target.value })
   }
+
   handleChangeCheckbox = (event) => {
     this.setState({ checked: !this.state.checked })
   }
 
   async propertyID(laddress, lamount) {
-    const propertyId = await this.state.landList.methods
-      .computeId(laddress, lamount)
-      .call()
+    const propertyId = await this.state.landList.methods.computeId(laddress, lamount).call()
     this.setState({ propertyId })
-    console.log(propertyId)
   }
 
   async Register(data, account, laddress, lamount) {
@@ -85,8 +80,7 @@ class Register extends Component {
         console.error(error)
         return
       }
-      this.state.landList.methods
-        .Registration(
+      this.state.landList.methods.Registration(
           account,
           result[0].hash,
           laddress,

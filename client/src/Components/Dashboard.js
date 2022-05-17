@@ -88,18 +88,17 @@ class Dashboard extends Component {
     else {
       window.alert('Token contract not deployed to detected network.')
     }
-    if (!window.localStorage.getItem('authenticated') || window.localStorage.getItem('authenticated') === 'false')
+    if (!window.localStorage.getItem('authenticated'))
       this.props.history.push('/login')
       
     this.setState({ isLoading: false })
-    this.getDetails()
-    this.getDetails1()
+    this.getOwnerDetails()
+    this.getAllLandDetails()
   }
 
-  async propertyDetails(property) {
-    let details = await this.state.landList.methods
-      .landInfoOwner(property)
-      .call()
+  async ownerPropertyDetails(property) {
+    let details = await this.state.landList.methods.landInfoOwner(property).call()
+
     ipfs.cat(details[1], (err, res) => {
       if (err) {
         console.error(err)
@@ -136,7 +135,7 @@ class Dashboard extends Component {
     })
   }
 
-  async propertyDetails1(property) {
+  async allPropertyDetails(property) {
     let details = await this.state.landList.methods.landInfoOwner(property).call()
 
     ipfs.cat(details[1], (err, res) => {
@@ -147,11 +146,7 @@ class Dashboard extends Component {
       const temp = JSON.parse(res.toString())
       console.log('temp', temp)
 
-      if (
-        details[0] != this.state.account &&
-        (details[5] == this.state.account ||
-          details[5] == '0x0000000000000000000000000000000000000000')
-      ) {
+      if (details[0] != this.state.account && (details[5] == this.state.account || details[5] == '0x0000000000000000000000000000000000000000')) {
         this.state.assetList1.push({
           property: property,
           uniqueID: details[1],
@@ -183,27 +178,29 @@ class Dashboard extends Component {
     })
   }
 
-  async getDetails() {
+  async getOwnerDetails() {
     const properties = await this.state.landList.methods.viewAssets().call({ from: this.state.account })
-    
-    for (let item of properties) {
-      this.propertyDetails(item)
-    }
-  }
-  async getDetails1() {
-    const properties = await this.state.landList.methods.Assets().call()
-    // console.log(properties)
 
     for (let item of properties) {
-      this.propertyDetails1(item)
+      this.ownerPropertyDetails(item)
     }
   }
+  async getAllLandDetails() {
+    const properties = await this.state.landList.methods.Assets().call()
+
+    for (let item of properties) {
+      this.allPropertyDetails1(item)
+    }
+  }
+
   handleChange = (event, newValue) => {
     this.setState({ value: newValue })
   }
+
   handleChangeIndex = (index) => {
     this.setState({ index })
   }
+
   render() {
     const { classes } = this.props
     return this.state.isLoading ? (

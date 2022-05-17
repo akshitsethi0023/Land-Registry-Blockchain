@@ -120,7 +120,7 @@ class table extends Component {
 
     window.location.reload()
   }
-  
+
   handleProcessRequest = async (id, n, address, name) => {
     await this.state.landList.methods.processRequest(id, n).send({
       from: this.state.account,
@@ -139,21 +139,9 @@ class table extends Component {
         exist: user[6],
       })
     }
-    let data = {
-      lemail: this.state.uemail,
-      subject:
-        n == 3
-          ? `${name} has accepted your requested.`
-          : `${name} has rejected your requested.`,
-      message:
-        n == 3
-          ? `${name} has accepted your requested. Please check your account.`
-          : `${name} has rejected your requested. Please check your account.`,
-    }
-
-    console.log(data)
     window.location.reload()
   }
+
   handleRequesterInfo = async (address) => {
     this.setState({ open: true })
     const user = await this.state.landList.methods.getUser(address).call()
@@ -170,9 +158,11 @@ class table extends Component {
       })
     }
   }
+
   handleClose = () => {
     this.setState({ open: false })
   }
+
   handleViewImages = async (images) => {
     this.setState({ open1: true })
 
@@ -182,6 +172,7 @@ class table extends Component {
       })
     }
   }
+
   handleClose1 = () => {
     this.setState({ open1: false })
   }
@@ -214,8 +205,7 @@ class table extends Component {
                       const value = row[column.id]
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.id == 'isAvailable' &&
-                          value == 'GovtApproved' ? (
+                          {column.id == 'isAvailable' && value == 'GovtApproved' ? (
                             <Button
                               variant="contained"
                               color="primary"
@@ -223,22 +213,16 @@ class table extends Component {
                             >
                               Make Available
                             </Button>
-                          ) : column.id == 'isAvailable' &&
-                            value == 'Pending' ? (
+                          ) : 
+                          column.id == 'isAvailable' && value == 'Pending' ? (
                             <Grid container spacing={2}>
                               <Grid item>
                                 <Button
                                   variant="contained"
                                   color="primary"
                                   onClick={() =>
-                                    this.handleProcessRequest(
-                                      row['property'],
-                                      3,
-                                      row['requester'],
-                                      row['name'],
-                                    )
-                                  }
-                                >
+                                    this.handleProcessRequest(row['property'], 3, row['requester'], row['name'])
+                                  }>
                                   Accept
                                 </Button>
                               </Grid>
@@ -247,14 +231,8 @@ class table extends Component {
                                   variant="contained"
                                   color="secondary"
                                   onClick={() =>
-                                    this.handleProcessRequest(
-                                      row['property'],
-                                      2,
-                                      row['requester'],
-                                      row['name'],
-                                    )
-                                  }
-                                >
+                                    this.handleProcessRequest(row['property'], 2, row['requester'], row['name'])
+                                  }>
                                   Reject
                                 </Button>
                               </Grid>
