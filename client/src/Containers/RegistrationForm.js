@@ -191,7 +191,7 @@ class Register extends Component {
           <TextField
             id="standard-full-width"
             type="account"
-            label="Private Key"
+            label="Account Address"
             fullWidth
             value={this.state.account}
             margin="normal"
