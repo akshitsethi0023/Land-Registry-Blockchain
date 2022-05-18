@@ -1,11 +1,6 @@
 pragma solidity ^0.5.0;
 
 contract LandRegistry {
-    // struct Task {
-    //     uint256 id;
-    //     string content;
-    //     bool completed;
-    // }
     struct user {
         address userid;
         string uname;
@@ -231,9 +226,11 @@ contract LandRegistry {
         require(msg.sender == land[property].requester);
         require(land[property].requestStatus == reqStatus.Approved);
         require(msg.value == (land[property].lamount * 1000000000000000000));
-
-        land[property].id.transfer(land[property].lamount * 1000000000000000000);
+        uint256 amount = land[property].lamount;
+        address buyer = land[property].requester;
+        address payable seller = land[property].id;
         removeOwnership(land[property].id, property);
+        seller.transfer(amount * 1000000000000000000);
 
         land[property].id = msg.sender;
         land[property].isGovtApproved = "Not Approved";
@@ -245,7 +242,7 @@ contract LandRegistry {
         transferLand(
             property, 
             land[property].id, 
-            land[property].requester);
+            buyer);
         
 
     }

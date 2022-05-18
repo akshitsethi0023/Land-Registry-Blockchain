@@ -44,7 +44,7 @@ const columns = [
 
   {
     id: 'lamount',
-    label: 'Total Amount (in Rs)',
+    label: 'Total Amount (in ETH)',
     minWidth: 100,
   },
   {
